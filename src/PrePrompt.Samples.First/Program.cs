@@ -29,7 +29,7 @@ namespace PrePrompt.Samples.First
         {
             using(var host = new WebHttpServiceHost(typeof(TheService)))
             {
-                var ep = host.AddServiceEndpoint(typeof (TheService), new HttpMessageBinding(), "Http://localhost:8080/first/");
+                var ep = host.AddServiceEndpoint(typeof(TheService), new HttpMessageBinding(), "Http://localhost:8080/first/");
                 ep.Behaviors.Add(new HttpEndpointBehavior(new FirstHostConfiguration()));
                 host.Open();
                 Console.WriteLine("host is opened at {0}, press any key to continue", ep.Address);

@@ -8,7 +8,6 @@
 *.pidb
 *.userprefs
 *.svclog
-AssemblyInfo.cs
 .DS_Store
 wcf.codeplex.com/
 deploy/
