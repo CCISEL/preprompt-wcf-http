@@ -11,11 +11,11 @@ This workshop presents the usage of WCF (Windows Communication Foundation) in th
 * Resource model.
 * Programatic configuration and conventions.
 * Client-side API.
-* Integration into the WCF architecture (channels, behaviors and dispatcher configuration)
+* Integration into the WCF architecture (channels, behaviors and dispatcher configuration).
 
 ## Teaching staff ##
 
-Duarte Nunes and Pedro Félix
+Duarte Nunes and Pedro Félix.
 
 ## Date ##
 
