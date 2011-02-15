@@ -5,44 +5,6 @@ using System.Text;
 
 namespace Prompt.Data
 {
-    public class Teacher
-    {
-        public string Name { get; private set; }
-        public string Bio { get; private set; }
-        public Uri Photo { get; private set; }
-
-        public IEnumerable<Course> Courses { get; set; }
-
-        public Teacher(string name, string photo, string bio)
-        {
-            Name = name;
-            Photo = new Uri(photo);
-            Bio = bio;
-        }
-    }
-
-    public class Course
-    {
-        public string Name { get; private set; }
-        public Uri HtmlSyllabus { get; private set; }
-        public string Syllabus { get; private set; }
-
-        public IEnumerable<Teacher> Teachers { get; set; }
-
-        public Course(string name, string uri, string syllabus)
-        {
-            Name = name;
-            HtmlSyllabus = new Uri(uri);
-            Syllabus = syllabus;
-        }
-    }
-
-    public interface IPromptRepository
-    {
-        IQueryable<Teacher> Teachers { get; }
-        IQueryable<Course> Courses { get; }
-    }
-
     public class InMemoryPromptRepository : IPromptRepository
     {
         public IQueryable<Teacher> Teachers { get { return _teachers.AsQueryable(); } }
@@ -76,24 +38,24 @@ namespace Prompt.Data
                 "http://prompt.cc.isel.ipl.pt/curso/plano-curricular/programacao-para-a-web-2/",
                 "Este módulo tem por objectivo dotar os participantes com as competências essenciais para a utilização das tecnologias cliente, no Web Browser, na construção de aplicações Web."
                 );
-            pgweb2.Teachers = new List<Teacher>(){cguedes,mcarvalho};
-            
+            pgweb2.Teachers = new List<Teacher>() { cguedes, mcarvalho };
+
             var pgconcur = new Course(
                 "Programação concorrente e assíncrona",
                 "http://prompt.cc.isel.ipl.pt/curso/plano-curricular/programacao-concorrente-e-assincrona/",
                 "Conhecer as características do suporte para concorrência dos ambientes de execução actuais, incluindo as interfaces assíncronas e o respectivo modelo de programação."
                 );
 
-            cguedes.Courses = new List<Course>() {pgweb2};
-            mcarvalho.Courses = new List<Course>() {pgweb2};
-            cmartins.Courses = new List<Course>() {pgconcur};
+            cguedes.Courses = new List<Course>() { pgweb2 };
+            mcarvalho.Courses = new List<Course>() { pgweb2 };
+            cmartins.Courses = new List<Course>() { pgconcur };
 
-            _teachers = new List<Teacher>(){cguedes,cmartins, mcarvalho};
-            _courses = new List<Course>() {pgweb2, pgconcur};
-            pgconcur.Teachers = new List<Teacher>() {cmartins};
+            _teachers = new List<Teacher>() { cguedes, cmartins, mcarvalho };
+            _courses = new List<Course>() { pgweb2, pgconcur };
+            pgconcur.Teachers = new List<Teacher>() { cmartins };
 
         }
-    
 
-}
+
+    }
 }
