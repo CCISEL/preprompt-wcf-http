@@ -25,6 +25,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.ServiceModel.Web.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Runtime.Serialization.Json", "..\wcf.codeplex.com\WCFJQuery\Src\Microsoft.Runtime.Serialization.Json\Microsoft.Runtime.Serialization.Json.csproj", "{A5879BE4-F1F5-4C39-88B9-372ABDEFF843}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Prompt.Data", "Prompt.Data\Prompt.Data.csproj", "{39F31C0A-07E2-473F-A521-42638AA1022B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrePROMPT.Samples.Content", "PrePROMPT.Samples.Content\PrePROMPT.Samples.Content.csproj", "{27323A5F-6981-4030-9965-1F34B04F486B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -106,6 +110,27 @@ Global
 		{A5879BE4-F1F5-4C39-88B9-372ABDEFF843}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{A5879BE4-F1F5-4C39-88B9-372ABDEFF843}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{A5879BE4-F1F5-4C39-88B9-372ABDEFF843}.Release|x86.ActiveCfg = Release|Any CPU
+		{39F31C0A-07E2-473F-A521-42638AA1022B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39F31C0A-07E2-473F-A521-42638AA1022B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39F31C0A-07E2-473F-A521-42638AA1022B}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{39F31C0A-07E2-473F-A521-42638AA1022B}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{39F31C0A-07E2-473F-A521-42638AA1022B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{39F31C0A-07E2-473F-A521-42638AA1022B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39F31C0A-07E2-473F-A521-42638AA1022B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39F31C0A-07E2-473F-A521-42638AA1022B}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{39F31C0A-07E2-473F-A521-42638AA1022B}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{39F31C0A-07E2-473F-A521-42638AA1022B}.Release|x86.ActiveCfg = Release|Any CPU
+		{27323A5F-6981-4030-9965-1F34B04F486B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27323A5F-6981-4030-9965-1F34B04F486B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27323A5F-6981-4030-9965-1F34B04F486B}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{27323A5F-6981-4030-9965-1F34B04F486B}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{27323A5F-6981-4030-9965-1F34B04F486B}.Debug|x86.ActiveCfg = Debug|x86
+		{27323A5F-6981-4030-9965-1F34B04F486B}.Debug|x86.Build.0 = Debug|x86
+		{27323A5F-6981-4030-9965-1F34B04F486B}.Release|Any CPU.ActiveCfg = Release|x86
+		{27323A5F-6981-4030-9965-1F34B04F486B}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{27323A5F-6981-4030-9965-1F34B04F486B}.Release|Mixed Platforms.Build.0 = Release|x86
+		{27323A5F-6981-4030-9965-1F34B04F486B}.Release|x86.ActiveCfg = Release|x86
+		{27323A5F-6981-4030-9965-1F34B04F486B}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -121,5 +146,7 @@ Global
 		{8C5CA420-BDC2-4B92-A20E-4EC1FBEEA27D} = {A2086F37-EE58-44AC-9DB2-B89755B8769B}
 		{BE5A2707-76A2-4374-A3BF-29AAA8864546} = {003CD12A-2A61-4AD6-8CF3-5EF5519F8C4F}
 		{5DE0FFE9-4872-4B29-9649-6131EE7FEDB1} = {BE5A2707-76A2-4374-A3BF-29AAA8864546}
+		{39F31C0A-07E2-473F-A521-42638AA1022B} = {BE5A2707-76A2-4374-A3BF-29AAA8864546}
+		{27323A5F-6981-4030-9965-1F34B04F486B} = {BE5A2707-76A2-4374-A3BF-29AAA8864546}
 	EndGlobalSection
 EndGlobal
