@@ -15,7 +15,8 @@ namespace PrePROMPT.Samples.Content
     class AtomMediaTypeProcessor : MediaTypeProcessor
     {
 
-        private readonly Dictionary<Type, Func<object, SyndicationFeed>> _formatters = new Dictionary<Type, Func<object, SyndicationFeed>>();
+        private readonly Dictionary<Type, Func<object, SyndicationFeed>> _formatters = 
+            new Dictionary<Type, Func<object, SyndicationFeed>>();
 
         public AtomMediaTypeProcessor WithFormatter<T>(Func<T, SyndicationFeed> f)
         {
@@ -27,14 +28,16 @@ namespace PrePROMPT.Samples.Content
         {
             get { yield return "application/atom+xml"; }
         }
-        public AtomMediaTypeProcessor(HttpOperationDescription operation, MediaTypeProcessorMode mode): base(operation, mode)
+        public AtomMediaTypeProcessor(HttpOperationDescription operation, MediaTypeProcessorMode mode)
+            : base(operation, mode)
         {
         }
 
         public override void WriteToStream(object instance, System.IO.Stream stream, HttpRequestMessage request)
         {
             var instanceType = instance.GetType();
-            Func<object, SyndicationFeed> f = _formatters.Where(e => e.Key.IsAssignableFrom(instanceType)).FirstOrDefault().Value;
+            Func<object, SyndicationFeed> f = 
+                _formatters.Where(e => e.Key.IsAssignableFrom(instanceType)).FirstOrDefault().Value;
             if(f == null)
             {
                 // what to do? return a 500?
