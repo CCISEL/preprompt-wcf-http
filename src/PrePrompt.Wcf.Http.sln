@@ -27,7 +27,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Runtime.Serializa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Prompt.Data", "Prompt.Data\Prompt.Data.csproj", "{39F31C0A-07E2-473F-A521-42638AA1022B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrePROMPT.Samples.Content", "PrePROMPT.Samples.Content\PrePROMPT.Samples.Content.csproj", "{27323A5F-6981-4030-9965-1F34B04F486B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrePrompt.Samples.Content", "PrePROMPT.Samples.Content\PrePrompt.Samples.Content.csproj", "{27323A5F-6981-4030-9965-1F34B04F486B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
