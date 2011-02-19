@@ -19,11 +19,12 @@ namespace PrePrompt.Samples.First
 
         public void RegisterResponseProcessorsForOperation(System.ServiceModel.Description.HttpOperationDescription operation, IList<System.ServiceModel.Dispatcher.Processor> processors, MediaTypeProcessorMode mode)
         {
-            // No response processors
+            processors.Add(new XmlProcessor(operation, mode));
+            processors.Add(new JsonProcessor(operation, mode));
         }
     }
 
-    class Program
+    class HostProgram
     {
         static void Main(string[] args)
         {
