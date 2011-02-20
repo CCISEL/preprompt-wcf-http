@@ -12,7 +12,7 @@
 wcf.codeplex.com/
 deploy/
 build/
-[Bb]in/
+src/**/**/[Bb]in
 [Dd]ebug/
 [Oo]bj/
 [Rr]elease/
