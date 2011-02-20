@@ -138,5 +138,12 @@ namespace PrePrompt.Samples.First
         {
             return new TimeZoneListModel(TimeZoneInfo.GetSystemTimeZones());
         }
+
+        // Using content negotiation
+        [WebGet(UriTemplate = "time2/")]
+        public string GetTime2(HttpRequestMessage req, HttpResponseMessage resp)
+        {
+            return DateTime.Now.ToLongTimeString();
+        }
     }
 }

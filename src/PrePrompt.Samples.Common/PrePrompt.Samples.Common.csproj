@@ -36,6 +36,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
@@ -46,6 +47,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AtomMediaTypeProcessor.cs" />
+    <Compile Include="ModeCtx.cs" />
+    <Compile Include="ProcessorProviderFor.cs" />
+    <Compile Include="ImageTools.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

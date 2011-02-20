@@ -62,7 +62,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AtomMediaTypeProcessor.cs" />
-    <Compile Include="HandyExtensions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="PromptService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
