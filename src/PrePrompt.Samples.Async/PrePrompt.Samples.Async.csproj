@@ -54,7 +54,6 @@
   <ItemGroup>
     <Compile Include="AsyncHttpEndpointBehavior.cs" />
     <Compile Include="AsyncResultWrapper.cs" />
-    <Compile Include="Extensions.cs" />
     <Compile Include="HostProgram.cs" />
     <Compile Include="AsyncProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -72,6 +71,10 @@
     <ProjectReference Include="..\..\wcf.codeplex.com\Http\Src\Microsoft.ServiceModel.Http\Microsoft.ServiceModel.Http.csproj">
       <Project>{7182B333-2A03-4D98-9DDB-0F0D462F6F36}</Project>
       <Name>Microsoft.ServiceModel.Http</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PrePrompt.Samples.Common\PrePrompt.Samples.Common.csproj">
+      <Project>{A4F6AA94-DE03-4B57-94AB-D9AAD7F99171}</Project>
+      <Name>PrePrompt.Samples.Common</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

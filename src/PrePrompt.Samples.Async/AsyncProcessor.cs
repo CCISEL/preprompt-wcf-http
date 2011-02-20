@@ -4,6 +4,7 @@ using System.Linq;
 using System.ServiceModel.Description;
 using System.ServiceModel.Dispatcher;
 using Microsoft.ServiceModel.Http;
+using PrePrompt.Samples.Common;
 
 namespace PrePrompt.Samples.Async
 {

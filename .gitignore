@@ -2,6 +2,7 @@
 *.csproj.user
 *.[Rr]e[Ss]harper*
 *.sln.cache
+*.vs10x
 *.suo
 *.user
 *.orig
