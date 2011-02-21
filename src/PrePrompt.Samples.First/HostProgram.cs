@@ -51,10 +51,23 @@ namespace PrePrompt.Samples.First
 
             //var config = new FirstHostConfiguration();
             var prov = new ProcessorProviderFor<TheService>();
-            prov.RemoveAll().OnResponses.OfOperation(
+            prov.RemoveAllMediaTypeProcessors().ForResponses.OfAllOperations();
+
+            prov.Use((o, l, m) => new ImageFromTextMediaProcessor(o, m))
+                .ForResponses.OfOperation(
                 s => s.GetTime2(default(HttpRequestMessage), default(HttpResponseMessage)));
-            prov.Use((o, l, m) => new ImageFromTextMediaProcessor(o, m)).OnResponses.OfOperation(
-                    s => s.GetTime2(default(HttpRequestMessage), default(HttpResponseMessage)));
+
+            prov.Use((o, l, m) => new AtomMediaTypeProcessor(o, m)
+                    .WithFormatter(
+                        (TheService.TimeZoneListModel tzms) => new SyndicationFeed("Time zones", "List of time zones", null,
+                                                                               tzms.Zones.Select(
+                                                                                   tzm =>
+                                                                                   new SyndicationItem(tzm.Id, tzm.Name,
+                                                                                                       new Uri(tzm.Uri)))))
+                )
+                .ForResponses.OfOperation(
+                    s => s.GetZones(default(HttpRequestMessage), default(HttpResponseMessage)));
+
 
             var config = new FirstHostConfiguration().SetProcessorProvider(prov);
 

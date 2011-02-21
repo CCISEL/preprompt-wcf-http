@@ -100,7 +100,7 @@ namespace PrePrompt.Samples.Common
             return new UseCtx(this, (o,l,m)=>l.Add(f(o,l,m)));
         }
 
-        public UseCtx RemoveAll()
+        public UseCtx RemoveAllMediaTypeProcessors()
         {
             return new UseCtx(this, (o, l, m) => l.ClearMediaTypeProcessors());
         }
@@ -117,12 +117,12 @@ namespace PrePrompt.Samples.Common
                 _f = f;
             }
 
-            public ModeCtx OnRequests
+            public ModeCtx ForRequests
             {
                 get { return new ModeCtx(_provider, MediaTypeProcessorMode.Request, _f); }
             }
 
-            public ModeCtx OnResponses
+            public ModeCtx ForResponses
             {
                 get { return new ModeCtx(_provider, MediaTypeProcessorMode.Response, _f); }
             }
