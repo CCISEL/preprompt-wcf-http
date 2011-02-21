@@ -56,7 +56,10 @@ namespace PrePrompt.Samples.First
             prov.Use((o, l, m) => new ImageFromTextMediaProcessor(o, m)).OnResponses.OfOperation(
                     s => s.GetTime2(default(HttpRequestMessage), default(HttpResponseMessage)));
 
-            var config = new FirstHostConfiguration().SetProcessorProvider(prov);
+            var config = new FirstHostConfiguration().SetProcessorProvider(prov).ResourceLinks(reg =>
+            {
+
+            });
 
             using(var host = new WebHttpServiceHost(typeof(TheService)))
             {
