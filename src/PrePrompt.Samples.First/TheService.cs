@@ -5,7 +5,6 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Security.Principal;
 using System.ServiceModel;
 using System.ServiceModel.Syndication;
 using System.ServiceModel.Web;
@@ -33,7 +32,7 @@ namespace PrePrompt.Samples.First
         }
 
 
-        // Extracting URL segments (also works for query string values)
+        // Parameters as URL segments (also works for query string values)
         // Note:
         //    - The explicit response definion (both content and status code - 200, 404 - )
         [WebGet(UriTemplate = "time/{zone}")]
