@@ -69,7 +69,10 @@ namespace PrePrompt.Samples.First
                     s => s.GetZones(default(HttpRequestMessage), default(HttpResponseMessage)));
 
 
-            var config = new FirstHostConfiguration().SetProcessorProvider(prov);
+            var config = new FirstHostConfiguration().SetProcessorProvider(prov).ResourceLinks(reg =>
+            {
+
+            });
 
             using(var host = new WebHttpServiceHost(typeof(TheService)))
             {

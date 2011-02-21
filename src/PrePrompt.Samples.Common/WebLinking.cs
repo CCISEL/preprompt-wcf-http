@@ -12,10 +12,18 @@ namespace PrePrompt.Samples.Common
 {
     public static class WebLinking
     {
-        public static WebLinksRegistry ResourceLinks(this HttpHostConfiguration configuration)
+        public static HttpHostConfiguration ResourceLinks(this HttpHostConfiguration configuration, 
+                                                          Action<WebLinksRegistry> action)
         {
-            return (configuration.ProcessorProvider as WebLinkingProcessorProvider).IfNotNull(p => p.LinksRegistry)
-                ?? WebLinksRegistry.From(configuration);
+            if (configuration.ProcessorProvider is WebLinkingProcessorProvider)
+            {
+                action(((WebLinkingProcessorProvider)configuration.ProcessorProvider).LinksRegistry);
+            }
+            else
+            {
+                action(WebLinksRegistry.From(configuration));
+            }
+            return configuration;
         }
     }
 

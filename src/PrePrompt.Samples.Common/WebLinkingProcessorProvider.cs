@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.ServiceModel.Description;
@@ -25,6 +26,7 @@ namespace PrePrompt.Samples.Common
                                                           MediaTypeProcessorMode mode)
         {
             _inner.RegisterRequestProcessorsForOperation(operation, processors, mode);
+            processors.Add(new WebLinkingProcessor(LinksRegistry, operation, mode));
         }
 
         public void RegisterResponseProcessorsForOperation(HttpOperationDescription operation, IList<Processor> processors,
@@ -40,10 +42,6 @@ namespace PrePrompt.Samples.Common
         private readonly WebLinksRegistry _registry;
         private readonly OperationDescription _operation;
         private readonly MediaTypeProcessorMode _mode;
-
-        //
-        // We do not cache the design time registered links to allow for links to be added dynamically.
-        //
 
         public WebLinkingProcessor(WebLinksRegistry registry, HttpOperationDescription httpOperationDescription,
                                    MediaTypeProcessorMode mode)
@@ -61,9 +59,10 @@ namespace PrePrompt.Samples.Common
             }
 
             var httpResponse = (HttpResponseMessage)input[0];
-            var links = (WebLinkCollection)input[1];
-
-
+            //var links = (WebLinkCollection)input[1];
+            var links = _registry.GetLinksFor(_operation);
+            
+            httpResponse.Headers.AddWithoutValidation("Link", "lalal");
 
             return new ProcessorResult();
         }
@@ -72,13 +71,13 @@ namespace PrePrompt.Samples.Common
         {
             if (_mode == MediaTypeProcessorMode.Request)
             {
-                return Enumerable.Empty<ProcessorArgument>();
+                return null;
             }
 
             return new[] 
             { 
                 new ProcessorArgument(HttpPipelineFormatter.ArgumentHttpResponseMessage, typeof(HttpResponseMessage)),
-                new ProcessorArgument("webLinks", typeof(WebLinkCollection))
+                //new ProcessorArgument("webLinks", typeof(WebLinkCollection))
             };
         }
 
@@ -89,7 +88,7 @@ namespace PrePrompt.Samples.Common
                 return new[] { new ProcessorArgument("webLinks", typeof(WebLinkCollection)) };
             }
 
-            return Enumerable.Empty<ProcessorArgument>();
+            return null;
         }
     }
 }

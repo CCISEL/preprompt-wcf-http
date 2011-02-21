@@ -53,8 +53,9 @@
     <Compile Include="ProcessorProviderFor.cs" />
     <Compile Include="ImageTools.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WebLink.cs" />
+    <Compile Include="WebLinkCollection.cs" />
     <Compile Include="WebLinking.cs" />
+    <Compile Include="WebLinkingProcessorProvider.cs" />
     <Compile Include="WebLinkTarget.cs" />
   </ItemGroup>
   <ItemGroup>
