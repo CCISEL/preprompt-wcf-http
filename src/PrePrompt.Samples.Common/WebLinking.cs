@@ -12,17 +12,18 @@ namespace PrePrompt.Samples.Common
 {
     public static class WebLinking
     {
-        public static HttpHostConfiguration ResourceLinks(this HttpHostConfiguration configuration, 
-                                                          Action<WebLinksRegistry> action)
+        public static HttpHostConfiguration EnableWebLinking(this HttpHostConfiguration configuration, 
+                                                             Action<WebLinksRegistry> action = null)
         {
-            if (configuration.ProcessorProvider is WebLinkingProcessorProvider)
+            var registry = configuration.ProcessorProvider is WebLinkingProcessorProvider
+                         ? ((WebLinkingProcessorProvider)configuration.ProcessorProvider).LinksRegistry
+                         : WebLinksRegistry.From(configuration);
+            
+            if (action != null)
             {
-                action(((WebLinkingProcessorProvider)configuration.ProcessorProvider).LinksRegistry);
+                action(registry);
             }
-            else
-            {
-                action(WebLinksRegistry.From(configuration));
-            }
+            
             return configuration;
         }
     }
@@ -45,7 +46,10 @@ namespace PrePrompt.Samples.Common
 
         public WebLinkCollection GetLinksFor(OperationDescription operation)
         {
-            return new WebLinkCollection(operation, Links.GetOrCreateValue(operation).Select(target => target.Clone()).ToList());
+            HashSet<WebLinkTarget> linkCollection;
+            return Links.TryGetValue(operation, out linkCollection) 
+                 ? new WebLinkCollection(operation, linkCollection.Select(target => target.Clone()).ToList()) 
+                 : new WebLinkCollection(operation);
         }
 
         public WebLinkConfiguration AddLinkFrom<TResource>(Expression<Action<TResource>> operationSelector = null)

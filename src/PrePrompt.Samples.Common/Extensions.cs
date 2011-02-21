@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 
 namespace PrePrompt.Samples.Common
 {
@@ -38,6 +39,21 @@ namespace PrePrompt.Samples.Common
         public static int CompareToIgnoreCase(this string source, string other)
         {
             return string.Compare(source, other, StringComparison.InvariantCultureIgnoreCase);
+        }
+
+        public static StringBuilder RemoveLastCharacter(this StringBuilder builder, int numCharacters = 1)
+        {
+            return builder.Remove(builder.Length - 1 - numCharacters, numCharacters);
+        }
+
+        public static bool IsNullOrEmpty(this string source)
+        {
+            return string.IsNullOrEmpty(source);
+        }
+
+        public static string FormatWith(this string source, params object[] args)
+        {
+            return string.Format(source, args);
         }
     }
 }
