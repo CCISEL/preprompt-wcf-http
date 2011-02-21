@@ -43,7 +43,7 @@ namespace PrePrompt.Samples.Common
 
         public static StringBuilder RemoveLastCharacter(this StringBuilder builder, int numCharacters = 1)
         {
-            return builder.Remove(builder.Length - 1 - numCharacters, numCharacters);
+            return builder.Remove(builder.Length - numCharacters, numCharacters);
         }
 
         public static bool IsNullOrEmpty(this string source)

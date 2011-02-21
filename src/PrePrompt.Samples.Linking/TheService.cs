@@ -1,5 +1,4 @@
-﻿
-using System.Net;
+﻿using System.Net;
 using System.Net.Http;
 using System.ServiceModel;
 using System.ServiceModel.Web;
@@ -11,11 +10,21 @@ namespace PrePrompt.Samples.Linking
     public class TheService
     {
         [WebGet(UriTemplate = "test/")]
-        public string Get(HttpResponseMessage resp, WebLinkCollection linkCollection)
+        public string Get(HttpResponseMessage resp, WebLinkCollection webLinks)
         {
-            linkCollection.Links.Add(new WebLinkTarget(null, "http://someuri", "next"));
+            webLinks.Links.Add(new WebLinkTarget(null, "http://someuri", "next"));
             resp.StatusCode = HttpStatusCode.OK;
             return "done";
+        }
+    }
+
+    [ServiceContract]
+    public class AnotherService
+    {
+        [WebGet(UriTemplate = "anotherservice/")]
+        public void Get(HttpResponseMessage resp, WebLinkCollection linkCollection)
+        {
+            resp.StatusCode = HttpStatusCode.NoContent;
         }
     }
 }

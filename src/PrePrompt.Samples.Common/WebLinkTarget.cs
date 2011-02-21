@@ -1,24 +1,24 @@
 ﻿using System;
-using System.ServiceModel.Description;
+using System.Reflection;
 
 namespace PrePrompt.Samples.Common
 {
     public class WebLinkTarget : IEquatable<WebLinkTarget>
     {
-        public WebLinkTarget(OperationDescription operation, string uri, string relationType)
+        public WebLinkTarget(MethodInfo method, string uri, string relationType)
         {
-            Operation = operation;
+            Method = method;
             Uri = uri;
             RelationType = relationType;
         }
 
-        public OperationDescription Operation { get; set; }
+        public MethodInfo Method { get; set; }
         public string Uri { get; set; }
         public string RelationType { get; set; }
 
         public WebLinkTarget Clone()
         {
-            return new WebLinkTarget(Operation, Uri, RelationType);
+            return new WebLinkTarget(Method, Uri, RelationType);
         }
 
         public bool Equals(WebLinkTarget other)
@@ -33,7 +33,7 @@ namespace PrePrompt.Samples.Common
                 return true;
             }
 
-            return Equals(other.Operation, Operation) 
+            return Equals(other.Method, Method) 
                 && other.Uri.CompareToIgnoreCase(Uri) == 0
                 && other.RelationType.CompareToIgnoreCase(RelationType) == 0;
         }
@@ -57,7 +57,7 @@ namespace PrePrompt.Samples.Common
         {
             unchecked
             {
-                int result = Operation.GetHashCode();
+                int result = Method.GetHashCode();
                 result = (result*397) ^ Uri.GetHashCode();
                 result = (result*397) ^ RelationType.GetHashCode();
                 return result;

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.ServiceModel.Description;
 using System.ServiceModel.Web;
 using Microsoft.ServiceModel.Http;
@@ -30,8 +29,8 @@ namespace PrePrompt.Samples.Common
 
     public class WebLinksRegistry
     {
-        internal readonly ConditionalWeakTable<OperationDescription, HashSet<WebLinkTarget>> Links =
-            new ConditionalWeakTable<OperationDescription, HashSet<WebLinkTarget>>();
+        internal readonly Dictionary<MethodInfo, HashSet<WebLinkTarget>> Links =
+            new Dictionary<MethodInfo, HashSet<WebLinkTarget>>();
 
         private WebLinksRegistry()
         { }
@@ -44,23 +43,23 @@ namespace PrePrompt.Samples.Common
             return registry;
         }
 
-        public WebLinkCollection GetLinksFor(OperationDescription operation)
+        public WebLinkCollection GetLinksFor(MethodInfo method)
         {
             HashSet<WebLinkTarget> linkCollection;
-            return Links.TryGetValue(operation, out linkCollection) 
-                 ? new WebLinkCollection(operation, linkCollection.Select(target => target.Clone()).ToList()) 
-                 : new WebLinkCollection(operation);
+            return Links.TryGetValue(method, out linkCollection)
+                 ? new WebLinkCollection(method, linkCollection.Select(target => target.Clone()).ToList())
+                 : new WebLinkCollection(method);
         }
 
-        public WebLinkConfiguration AddLinkFrom<TResource>(Expression<Action<TResource>> operationSelector = null)
+        public WebLinkConfiguration AddLinkFrom<TResource>(Expression<Action<TResource>> methodSelector = null)
         {
-            return new WebLinkConfiguration(this, getTarget(operationSelector).Item1);
+            return new WebLinkConfiguration(this, getTarget(methodSelector).Item1);
         }
 
-        internal Tuple<OperationDescription, string> getTarget<TResource>(Expression<Action<TResource>> operationSelector)
+        internal Tuple<MethodInfo, string> getTarget<TResource>(Expression<Action<TResource>> methodSelector)
         {
             ensureIsResource<TResource>();
-            return operationSelector != null ? null : getGetOperationFor(typeof(TResource));
+            return methodSelector != null ? null : getGetMethodFor(typeof(TResource));
         }
 
         internal static void ensureIsResource<T>()
@@ -71,48 +70,44 @@ namespace PrePrompt.Samples.Common
             }
         }
 
-        private static Tuple<OperationDescription, string> getGetOperationFor(Type resourceType)
+        private static Tuple<MethodInfo, string> getGetMethodFor(Type resourceType)
         {
             const BindingFlags flags = BindingFlags.Instance | BindingFlags.InvokeMethod | BindingFlags.Public;
-            var operation = resourceType
+            var context = resourceType
                 .GetMethods(flags)
-                .Select(m => Tuple.Create(m, m.Attribute<WebGetAttribute>()))
-                .FirstOrDefault(t => t.Item2 != null);
+                .Where(m => m.HasAttribute<WebGetAttribute>())
+                .Select(m => Tuple.Create(m, m.Attribute<WebGetAttribute>().UriTemplate))
+                .FirstOrDefault();
 
-            if (operation == null)
+            if (context == null)
             {
                 throw new ArgumentException("The specified resource must allow the HTTP GET method");
             }
 
-            return Tuple.Create(getOperationFrom(operation.Item1, resourceType), operation.Item2.UriTemplate);
-        }
-
-        private static OperationDescription getOperationFrom(MethodInfo methodInfo, Type resourceType)
-        {
-            //
-            // We don't use the MethodInfo.DeclaringType property in order to support inheritance.
-            //
-
-            return ContractDescription.GetContract(resourceType).Operations
-                .FirstOrDefault(op => op.SyncMethod == methodInfo || op.BeginMethod == methodInfo);
+            return context;
         }
     }
 
     public class WebLinkConfiguration
     {
         private readonly WebLinksRegistry _registry;
-        private readonly OperationDescription _context;
+        private readonly MethodInfo _context;
 
-        public WebLinkConfiguration(WebLinksRegistry registry, OperationDescription context)
+        public WebLinkConfiguration(WebLinksRegistry registry, MethodInfo context)
         {
             _registry = registry;
             _context = context;
         }
 
-        public WebLinksRegistry To<TResource>(string relType, Expression<Action<TResource>> operationSelector = null)
+        public WebLinksRegistry To<TResource>(string relType, Expression<Action<TResource>> methodSelector = null)
         {
-            var target = _registry.getTarget(operationSelector);
-            _registry.Links.GetOrCreateValue(_context).Add(new WebLinkTarget(target.Item1, target.Item2, relType));
+            var target = _registry.getTarget(methodSelector);
+            HashSet<WebLinkTarget> targets;
+            if (_registry.Links.TryGetValue(_context, out targets) == false)
+            {
+                _registry.Links.Add(_context, (targets = new HashSet<WebLinkTarget>()));
+            }
+            targets.Add(new WebLinkTarget(target.Item1, target.Item2, relType));
             return _registry;
         }
     }

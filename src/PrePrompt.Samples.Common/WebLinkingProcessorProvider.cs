@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Reflection;
 using System.ServiceModel.Channels;
 using System.ServiceModel.Description;
 using System.ServiceModel.Dispatcher;
@@ -27,14 +27,21 @@ namespace PrePrompt.Samples.Common
         public void RegisterRequestProcessorsForOperation(HttpOperationDescription operation, IList<Processor> processors,
                                                           MediaTypeProcessorMode mode)
         {
-            _inner.RegisterRequestProcessorsForOperation(operation, processors, mode);
+            if (_inner != null)
+            {
+                _inner.RegisterRequestProcessorsForOperation(operation, processors, mode);
+            }
+
             processors.Add(new WebLinkingProcessor(LinksRegistry, operation, mode));
         }
 
         public void RegisterResponseProcessorsForOperation(HttpOperationDescription operation, IList<Processor> processors,
                                                            MediaTypeProcessorMode mode)
         {
-            _inner.RegisterResponseProcessorsForOperation(operation, processors, mode);
+            if (_inner != null)
+            {
+                _inner.RegisterResponseProcessorsForOperation(operation, processors, mode);
+            }
             processors.Add(new WebLinkingProcessor(LinksRegistry, operation, mode));
         }
     }
@@ -42,14 +49,14 @@ namespace PrePrompt.Samples.Common
     internal class WebLinkingProcessor : Processor
     {
         private readonly WebLinksRegistry _registry;
-        private readonly OperationDescription _operation;
+        private readonly MethodInfo _method;
         private readonly MediaTypeProcessorMode _mode;
 
         public WebLinkingProcessor(WebLinksRegistry registry, HttpOperationDescription httpOperationDescription,
                                    MediaTypeProcessorMode mode)
         {
             _registry = registry;
-            _operation = httpOperationDescription.ToOperationDescription();
+            _method = httpOperationDescription.SyncMethod ?? httpOperationDescription.BeginMethod;
             _mode = mode;
         }
 
@@ -60,7 +67,7 @@ namespace PrePrompt.Samples.Common
 
             if (_mode == MediaTypeProcessorMode.Request)
             {
-                linkCollection = _registry.GetLinksFor(_operation);
+                linkCollection = _registry.GetLinksFor(_method);
                 httpRequest.GetProperties().Add(linkCollection);
                 return new ProcessorResult { Output = new object[] { linkCollection } };
             }
@@ -85,10 +92,10 @@ namespace PrePrompt.Samples.Common
         private static string extractLinkDescription(WebLinkTarget target)
         {
             //
-            // TODO: Add support for properties.
+            // TODO: Add support for properties and multiple relation types.
             //
                
-            return "{0};rel=\"{1}\"".FormatWith(target.Uri, target.RelationType);
+            return "<{0}>;rel=\"{1}\"".FormatWith(target.Uri, target.RelationType);
         }
 
         protected override IEnumerable<ProcessorArgument> OnGetInArguments()
