@@ -37,6 +37,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrePrompt.Samples.Async", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrePrompt.Samples.Linking", "PrePrompt.Samples.Linking\PrePrompt.Samples.Linking.csproj", "{716AB0B4-4207-4250-8658-E16309373444}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrePrompt.Samples.Client", "PrePrompt.Samples.Client\PrePrompt.Samples.Client.csproj", "{759B2AC7-0561-4FB7-95FB-5624082F2279}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -180,6 +182,16 @@ Global
 		{716AB0B4-4207-4250-8658-E16309373444}.Release|Mixed Platforms.Build.0 = Release|x86
 		{716AB0B4-4207-4250-8658-E16309373444}.Release|x86.ActiveCfg = Release|x86
 		{716AB0B4-4207-4250-8658-E16309373444}.Release|x86.Build.0 = Release|x86
+		{759B2AC7-0561-4FB7-95FB-5624082F2279}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{759B2AC7-0561-4FB7-95FB-5624082F2279}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{759B2AC7-0561-4FB7-95FB-5624082F2279}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{759B2AC7-0561-4FB7-95FB-5624082F2279}.Debug|x86.ActiveCfg = Debug|x86
+		{759B2AC7-0561-4FB7-95FB-5624082F2279}.Debug|x86.Build.0 = Debug|x86
+		{759B2AC7-0561-4FB7-95FB-5624082F2279}.Release|Any CPU.ActiveCfg = Release|x86
+		{759B2AC7-0561-4FB7-95FB-5624082F2279}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{759B2AC7-0561-4FB7-95FB-5624082F2279}.Release|Mixed Platforms.Build.0 = Release|x86
+		{759B2AC7-0561-4FB7-95FB-5624082F2279}.Release|x86.ActiveCfg = Release|x86
+		{759B2AC7-0561-4FB7-95FB-5624082F2279}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -201,5 +213,6 @@ Global
 		{A4F6AA94-DE03-4B57-94AB-D9AAD7F99171} = {BE5A2707-76A2-4374-A3BF-29AAA8864546}
 		{2F02CE6B-B883-41FE-9EF9-9FA456D117E2} = {BE5A2707-76A2-4374-A3BF-29AAA8864546}
 		{716AB0B4-4207-4250-8658-E16309373444} = {BE5A2707-76A2-4374-A3BF-29AAA8864546}
+		{759B2AC7-0561-4FB7-95FB-5624082F2279} = {BE5A2707-76A2-4374-A3BF-29AAA8864546}
 	EndGlobalSection
 EndGlobal

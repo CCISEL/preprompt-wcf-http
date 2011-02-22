@@ -31,7 +31,6 @@ namespace PrePrompt.Samples.Common
             {
                 _inner.RegisterRequestProcessorsForOperation(operation, processors, mode);
             }
-
             processors.Add(new WebLinkingProcessor(LinksRegistry, operation, mode));
         }
 
