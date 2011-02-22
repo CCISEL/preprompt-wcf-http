@@ -1,5 +1,4 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using System.Net.Http;
 using System.ServiceModel;
 using System.ServiceModel.Web;
@@ -13,7 +12,6 @@ namespace PrePrompt.Samples.Async
         [WebGet(UriTemplate = "test/")]
         public async Task<string> Get(HttpResponseMessage resp)
         {
-            Console.WriteLine("lala");
             await TaskEx.Delay(10000);
             resp.StatusCode = HttpStatusCode.OK;
             return "done";

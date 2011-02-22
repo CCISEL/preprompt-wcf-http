@@ -143,10 +143,7 @@ namespace PrePrompt.Samples.First
             //prov.Use((o,l,m) => new DataValidationProcessor(o)).ForRequests.OfAllOperations();
             //prov.Use((o,l,m) => new RequestLoggingProcessor(o)).ForRequests.OfAllOperations();
 
-            var config = new FirstHostConfiguration().SetProcessorProvider(prov).ResourceLinks(reg =>
-            {
-
-            });
+            var config = new FirstHostConfiguration().SetProcessorProvider(prov);
 
             Pipeline(config);
 

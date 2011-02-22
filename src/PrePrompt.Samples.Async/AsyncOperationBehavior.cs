@@ -1,37 +1,14 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
 using System.ServiceModel.Channels;
 using System.ServiceModel.Description;
 using System.ServiceModel.Dispatcher;
 using System.Threading.Tasks;
-using Microsoft.ServiceModel.Description;
-using Microsoft.ServiceModel.Http;
 
 namespace PrePrompt.Samples.Async
 {
-    public class AsyncHttpEndpointBehavior : HttpEndpointBehavior
-    {
-        public AsyncHttpEndpointBehavior(HttpHostConfiguration configuration)
-            : base(configuration)
-        { }
-
-        protected override IOperationInvoker OnGetInvoker(HttpOperationDescription description, DispatchOperation operation)
-        {
-            //
-            // Doesn't work. Need to figure out why.
-            //
-            
-            //return typeof(Task).IsAssignableFrom(description.SyncMethod.ReturnType)
-            //     ? new AsyncTaskOperationInvoker(description.SyncMethod, operation.Invoker)
-            //     : operation.Invoker;
-            
-            return null;
-        }
-    }
-
-    public class OperationIsAsync : Attribute, IOperationBehavior
+    public class AsyncOperationBehavior : IOperationBehavior
     {
         public void ApplyDispatchBehavior(OperationDescription description, DispatchOperation operation)
         {
@@ -51,7 +28,6 @@ namespace PrePrompt.Samples.Async
     internal class AsyncTaskOperationInvoker : IOperationInvoker
     {
         private static readonly object[] _emptyArray = new object[0];
-
 
         private readonly MethodInfo _method;
         private readonly IOperationInvoker _inner;
