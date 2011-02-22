@@ -62,19 +62,35 @@ namespace PrePrompt.Samples.Common
 
         protected override ProcessorResult OnExecute(object[] input)
         {
+            var httpResponse = (HttpResponseMessage)input[0];
             WebLinkCollection linkCollection;
-            var httpRequest = (HttpRequestMessage)input[0];
 
             if (_mode == MediaTypeProcessorMode.Request)
             {
                 linkCollection = _registry.GetLinksFor(_method);
-                httpRequest.GetProperties().Add(linkCollection);
-                return new ProcessorResult { Output = new object[] { linkCollection } };
+                httpResponse.GetProperties().Add(linkCollection);
             }
-            
-            var httpResponse = (HttpResponseMessage)input[1];
-            linkCollection = (WebLinkCollection)httpRequest.GetProperties().Single(p => p is WebLinkCollection);
+            else
+            {
+                linkCollection = httpResponse.GetProperties().OfType<WebLinkCollection>().Single();
+                addLinkHeader(httpResponse, linkCollection);
+            }
 
+            return new ProcessorResult { Output = new object[] { linkCollection } };
+        }
+
+        protected override IEnumerable<ProcessorArgument> OnGetInArguments()
+        {
+            return new[] { new ProcessorArgument(HttpPipelineFormatter.ArgumentHttpResponseMessage, typeof(HttpResponseMessage)) };
+        }
+
+        protected override IEnumerable<ProcessorArgument> OnGetOutArguments()
+        {
+            return new[] { new ProcessorArgument("webLinks", typeof(WebLinkCollection)) };
+        }
+
+        private static void addLinkHeader(HttpResponseMessage httpResponse, WebLinkCollection linkCollection)
+        {
             var links = linkCollection
                 .Links
                 .Aggregate(new StringBuilder(), (b, target) => b.Append(extractLinkDescription(target)).Append(','))
@@ -85,8 +101,6 @@ namespace PrePrompt.Samples.Common
             {
                 httpResponse.Headers.AddWithoutValidation("Link", links);
             }
-
-            return new ProcessorResult();
         }
 
         private static string extractLinkDescription(WebLinkTarget target)
@@ -94,25 +108,8 @@ namespace PrePrompt.Samples.Common
             //
             // TODO: Add support for properties and multiple relation types.
             //
-               
+
             return "<{0}>;rel=\"{1}\"".FormatWith(target.Uri, target.RelationType);
-        }
-
-        protected override IEnumerable<ProcessorArgument> OnGetInArguments()
-        {
-            yield return new ProcessorArgument(HttpPipelineFormatter.ArgumentHttpRequestMessage, typeof(HttpRequestMessage));
-            if (_mode == MediaTypeProcessorMode.Response)
-            {
-                yield return new ProcessorArgument(HttpPipelineFormatter.ArgumentHttpResponseMessage, typeof(HttpResponseMessage));
-            }
-        }
-
-        protected override IEnumerable<ProcessorArgument> OnGetOutArguments()
-        {
-            if (_mode == MediaTypeProcessorMode.Request)
-            {
-                yield return new ProcessorArgument("webLinks", typeof(WebLinkCollection));
-            }
         }
     }
 }
