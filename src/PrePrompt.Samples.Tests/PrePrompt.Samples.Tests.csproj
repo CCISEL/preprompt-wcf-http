@@ -2,21 +2,18 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{5DE0FFE9-4872-4B29-9649-6131EE7FEDB1}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{CFDEA006-D883-4682-B6D5-9F7272B87129}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>PrePrompt.Samples.First</RootNamespace>
-    <AssemblyName>PrePrompt.Samples.First</AssemblyName>
+    <RootNamespace>PrePrompt.Samples.Tests</RootNamespace>
+    <AssemblyName>PrePrompt.Samples.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <PlatformTarget>x86</PlatformTarget>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -25,8 +22,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <PlatformTarget>x86</PlatformTarget>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -34,28 +30,19 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <OutputPath>bin\Debug\</OutputPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <OutputPath>bin\Release\</OutputPath>
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Net.Http">
       <HintPath>..\..\wcf.codeplex.com\Lib\HttpClient\Microsoft.Net.Http.dll</HintPath>
     </Reference>
+    <Reference Include="nunit.framework, Version=2.5.7.10213, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\nunit.framework.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
-    <Reference Include="System.ServiceModel.Web">
-      <HintPath>..\..\..\..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.ServiceModel.Web.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Speech" />
-    <Reference Include="System.Web" />
+    <Reference Include="System.ServiceModel.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -63,20 +50,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="WaveFromTextMediaProcessor.cs" />
-    <Compile Include="HostProgram.cs" />
-    <Compile Include="ImageFromTextMediaProcessor.cs" />
+    <Compile Include="GetTimeForZoneTests.cs" />
+    <Compile Include="GetTimeTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TheService.cs" />
+    <Compile Include="ValidatorTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\wcf.codeplex.com\Http\prototypes\Microsoft.Net.Http.Extensions\Microsoft.Net.Http.Extensions.csproj">
-      <Project>{7E302511-BAA7-4E75-BEA7-9FB0F490047F}</Project>
-      <Name>Microsoft.Net.Http.Extensions</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\wcf.codeplex.com\Http\prototypes\Microsoft.ServiceModel.WebHttp\Microsoft.ServiceModel.WebHttp.csproj">
       <Project>{8C5CA420-BDC2-4B92-A20E-4EC1FBEEA27D}</Project>
       <Name>Microsoft.ServiceModel.WebHttp</Name>
@@ -88,6 +67,10 @@
     <ProjectReference Include="..\PrePrompt.Samples.Common\PrePrompt.Samples.Common.csproj">
       <Project>{A4F6AA94-DE03-4B57-94AB-D9AAD7F99171}</Project>
       <Name>PrePrompt.Samples.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PrePrompt.Samples.First\PrePrompt.Samples.First.csproj">
+      <Project>{5DE0FFE9-4872-4B29-9649-6131EE7FEDB1}</Project>
+      <Name>PrePrompt.Samples.First</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

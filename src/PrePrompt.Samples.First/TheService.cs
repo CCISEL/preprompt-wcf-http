@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -14,6 +15,9 @@ using System.Xml;
 using System.Xml.Linq;
 
 using Microsoft.Xml.Linq;
+using PrePrompt.Samples.Common;
+
+
 
 namespace PrePrompt.Samples.First
 {
@@ -143,6 +147,19 @@ namespace PrePrompt.Samples.First
         public string GetTime2(HttpRequestMessage req, HttpResponseMessage resp)
         {
             return DateTime.Now.ToLongTimeString();
+        }
+
+
+        // Using data annotation
+        [WebGet(UriTemplate = "da/{str}")]
+        public string GetUpperString(
+            DataValidationResult isValid,
+            [StringLength(4)]
+            string str)
+        {
+            var res = string.Format("Valid: {0}, Value: {1}", isValid.Valid, str.ToUpper());
+            Console.WriteLine(res);
+            return res;
         }
     }
 }

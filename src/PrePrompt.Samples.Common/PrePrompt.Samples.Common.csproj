@@ -35,6 +35,7 @@
       <HintPath>..\..\wcf.codeplex.com\Lib\HttpClient\Microsoft.Net.Http.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
@@ -48,11 +49,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AtomMediaTypeProcessor.cs" />
+    <Compile Include="DataValidationProcessor.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="ModeCtx.cs" />
+    <Compile Include="PipelineHost.cs" />
     <Compile Include="ProcessorProviderFor.cs" />
     <Compile Include="ImageTools.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RequestLoggingProcessor.cs" />
     <Compile Include="WebLinkCollection.cs" />
     <Compile Include="WebLinking.cs" />
     <Compile Include="WebLinkingProcessorProvider.cs" />
