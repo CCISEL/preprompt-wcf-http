@@ -12,13 +12,13 @@ namespace PrePrompt.Samples.Client
 
         protected override HttpRequestMessage ProcessRequest(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            Console.WriteLine("Sending message to {0}", request.RequestUri);
+            Console.WriteLine("Sending request {0}", request);
             return request;
         }
 
         protected override HttpResponseMessage ProcessResponse(HttpResponseMessage response, CancellationToken cancellationToken)
         {
-            Console.WriteLine("Received message from {0} with status {1}", response.RequestMessage.RequestUri, response.StatusCode);
+            Console.WriteLine("Received response {0}", response);
             return response;
         }
     }
