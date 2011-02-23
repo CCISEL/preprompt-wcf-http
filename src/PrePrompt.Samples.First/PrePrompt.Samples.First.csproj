@@ -63,9 +63,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="WaveFromTextMediaProcessor.cs" />
     <Compile Include="HostProgram.cs" />
-    <Compile Include="ImageFromTextMediaProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TheService.cs" />
   </ItemGroup>
