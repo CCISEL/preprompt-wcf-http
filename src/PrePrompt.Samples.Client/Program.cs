@@ -1,14 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Runtime.Serialization.Json;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 using Microsoft.Net.Http;
 using Microsoft.Xml.Linq;
-using PrePrompt.Samples.Client.Authentication;
+using Moq;
+using NUnit.Framework;
 using PrePrompt.Samples.Client.Twitter;
 using PrePrompt.Samples.Common;
 
@@ -20,39 +22,16 @@ namespace PrePrompt.Samples.Client
 
         public static void Main()
         {
-            var client = new HttpClient("http://code.deetc.e.ipl.pt/");
-            client.Channel = new BasicAuthenticationChannel(new WebRequestChannel(),
-                                                            _ => Tuple.Create("", ""), 
-                                                            client);
+            //var client = new HttpClient("http://code.deetc.e.ipl.pt/")
+            //{
+            //    Channel = new BasicAuthenticationChannel(new WebRequestChannel(),
+            //                                             _ => Tuple.Create("duarte", ""),
+            //                                             new WebRequestChannel())
+            //};
 
-            var response = client.Get("ls/1011v/svn/private/");
-            response.EnsureSuccessStatusCode();
-            Console.WriteLine(response);
-        }
-
-        public class JsonDataContractFormatter : IContentFormatter
-        {
-            private readonly DataContractJsonSerializer _serializer;
-
-            public JsonDataContractFormatter(DataContractJsonSerializer serializer)
-            {
-                _serializer = serializer;
-            }
-
-            public IEnumerable<MediaTypeHeaderValue> SupportedMediaTypes
-            {
-                get { return new[] { new MediaTypeHeaderValue("application/json") }; }
-            }
-
-            public void WriteToStream(object instance, Stream stream)
-            {
-                _serializer.WriteObject(stream, instance);
-            }
-
-            public object ReadFromStream(Stream stream)
-            {
-                return _serializer.ReadObject(stream);
-            }
+            //var response = client.Get("ls/1011v/svn/private/");
+            //response.EnsureSuccessStatusCode();
+            //Console.WriteLine(response);
         }
 
         private static void twitterExample()
@@ -73,7 +52,7 @@ namespace PrePrompt.Samples.Client
             XElement element = response.Content.ReadAsXElement();
             Console.WriteLine(element.Element("description").Value);
 
-            var formatter = new JsonDataContractFormatter(new DataContractJsonSerializer(typeof (TwitterUser)));
+            var formatter = new JsonDataContractFormatter(new DataContractJsonSerializer(typeof(TwitterUser)));
             var c = new RestyClient<TwitterUser>(TWITTER, new[] { formatter });
             Tuple<HttpStatusCode, TwitterUser> result = c.ExecuteGet("1/users/show/{0}.json".FormatWith("duarte_nunes"));
             Console.WriteLine(result.Item1);
