@@ -113,16 +113,16 @@ namespace PrePrompt.Samples.Client
             });
         }
 
+        public Tuple<HttpStatusCode, T> Send(HttpRequestMessage message, CancellationToken token)
+        {
+            return SendAsync(message, token).Result;
+        }
+
         private T readEntity(HttpResponseMessage response)
         {
             var content = response.Content;
             var formatter = _formatters.First(f => f.SupportedMediaTypes.Contains(content.Headers.ContentType));
             return (T)formatter.ReadFromStream(content.ContentReadStream);
-        }
-
-        public Tuple<HttpStatusCode, T> Send(HttpRequestMessage message, CancellationToken token)
-        {
-            return SendAsync(message, token).Result;
         }
 
         private HttpRequestMessage createRequestMessage(string requestUri, HttpMethod method, Object entity = null)

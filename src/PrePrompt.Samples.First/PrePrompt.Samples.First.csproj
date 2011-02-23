@@ -68,7 +68,9 @@
     <Compile Include="TheService.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\wcf.codeplex.com\Http\prototypes\Microsoft.Net.Http.Extensions\Microsoft.Net.Http.Extensions.csproj">

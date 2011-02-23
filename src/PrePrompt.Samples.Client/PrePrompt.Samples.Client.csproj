@@ -80,6 +80,8 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceModel.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Xml" />
@@ -93,12 +95,22 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RestyClient.cs" />
+    <Compile Include="TwitterTunneling.cs" />
     <Compile Include="Twitter\TwitterUser.cs" />
+    <Compile Include="Urls.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\wcf.codeplex.com\Http\prototypes\Microsoft.Net.Http.Extensions\Microsoft.Net.Http.Extensions.csproj">
       <Project>{7E302511-BAA7-4E75-BEA7-9FB0F490047F}</Project>
       <Name>Microsoft.Net.Http.Extensions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\wcf.codeplex.com\Http\prototypes\Microsoft.ServiceModel.WebHttp\Microsoft.ServiceModel.WebHttp.csproj">
+      <Project>{8C5CA420-BDC2-4B92-A20E-4EC1FBEEA27D}</Project>
+      <Name>Microsoft.ServiceModel.WebHttp</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\wcf.codeplex.com\Http\Src\Microsoft.ServiceModel.Http\Microsoft.ServiceModel.Http.csproj">
+      <Project>{7182B333-2A03-4D98-9DDB-0F0D462F6F36}</Project>
+      <Name>Microsoft.ServiceModel.Http</Name>
     </ProjectReference>
     <ProjectReference Include="..\PrePrompt.Samples.Common\PrePrompt.Samples.Common.csproj">
       <Project>{A4F6AA94-DE03-4B57-94AB-D9AAD7F99171}</Project>
