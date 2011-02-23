@@ -10,19 +10,19 @@ namespace PrePrompt.Samples.Client.Authentication
     public class BasicAuthenticationChannel : AuthenticationChannel
     {
         private static readonly ConcurrentDictionary<Uri, string> _cache = new ConcurrentDictionary<Uri, string>();
-        
-        private readonly Func<string, Tuple<string, string>> _getCredentials;
-        private readonly HttpClient _client;
 
-        public BasicAuthenticationChannel(HttpMessageChannel inner, Func<string, Tuple<string, string>> getCredentials, HttpClient client) 
+        private readonly Func<string, Tuple<string, string>> _getCredentials;
+        private readonly HttpMessageChannel _channel;
+
+        public BasicAuthenticationChannel(HttpMessageChannel inner, Func<string, Tuple<string, string>> getCredentials, HttpMessageChannel channel)
             : base(inner, "Basic")
         {
             _getCredentials = getCredentials;
-            _client = client;
+            _channel = channel;
         }
 
-        protected override HttpResponseMessage TryAuthenticate(AuthenticationHeaderValue authHeaderValue, 
-                                                               HttpResponseMessage response, 
+        protected override HttpResponseMessage TryAuthenticate(AuthenticationHeaderValue authHeaderValue,
+                                                               HttpResponseMessage response,
                                                                HttpRequestMessage issuedRequest)
         {
             var credentials = _getCredentials(authHeaderValue.Parameter);
@@ -35,7 +35,7 @@ namespace PrePrompt.Samples.Client.Authentication
             var auth = "{0}:{1}".FormatWith(credentials.Item1, credentials.Item2).ToBase64();
             request.With().Authorization(new AuthenticationHeaderValue(Scheme, auth));
 
-            var newResponse = _client.Send(request);
+            var newResponse = new HttpClient { Channel = _channel }.Send(request);
 
             if (newResponse.IsSuccessStatusCode)
             {

@@ -129,13 +129,20 @@ namespace PrePrompt.Samples.Client
         {
             return new HttpRequestMessage(method, requestUri).Configure(req =>
             {
-                if (entity != null)
-                {
-                    var ms = new MemoryStream();
-                    _formatters.First().WriteToStream(entity, ms);
-                    req.Content(() => new StreamContent(ms));
-                }
                 req.Accept(_mediaTypes);
+                if (entity == null)
+                {
+                    return;
+                }
+                var ms = new MemoryStream();
+                var formatter = _formatters.First();
+                formatter.WriteToStream(entity, ms);
+                req.Content(() =>
+                {
+                    var content = new StreamContent(ms);
+                    content.Headers.ContentType = formatter.SupportedMediaTypes.First();
+                    return content;
+                });
             });
         }
 
