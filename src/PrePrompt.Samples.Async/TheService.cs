@@ -2,6 +2,7 @@
 using System.Net.Http;
 using System.ServiceModel;
 using System.ServiceModel.Web;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace PrePrompt.Samples.Async
@@ -10,11 +11,16 @@ namespace PrePrompt.Samples.Async
     public class TheService
     {
         [WebGet(UriTemplate = "test/")]
-        public async Task<string> Get(HttpResponseMessage resp)
+        public Task<string> Get(HttpResponseMessage resp)
         {
-            await TaskEx.Delay(10000);
-            resp.StatusCode = HttpStatusCode.OK;
-            return "done";
+            var tcs = new TaskCompletionSource<string>();
+            new Timer(t =>
+            {
+                resp.StatusCode = HttpStatusCode.OK;
+                tcs.SetResult("done");
+                ((Timer) t).Dispose();
+            }).Change(10000, Timeout.Infinite);
+            return tcs.Task;
         }
     }
 }

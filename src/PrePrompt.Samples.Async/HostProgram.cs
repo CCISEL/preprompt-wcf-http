@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.ServiceModel;
 using System.ServiceModel.Description;
 using System.ServiceModel.Dispatcher;
-using System.Threading.Tasks;
 using Microsoft.ServiceModel.Description;
 using Microsoft.ServiceModel.Http;
+using PrePrompt.Samples.Common;
 
 namespace PrePrompt.Samples.Async
 {
@@ -19,17 +19,7 @@ namespace PrePrompt.Samples.Async
         public void RegisterResponseProcessorsForOperation(HttpOperationDescription operation, IList<Processor> processors,
                                                            MediaTypeProcessorMode mode)
         {
-            prepareAsyncOperation(operation, processors);
-        }
-
-        private static void prepareAsyncOperation(HttpOperationDescription operation, IList<Processor> processors)
-        {
-            var retValue = operation.ReturnValue;
-            if (typeof(Task).IsAssignableFrom(retValue.ParameterType))
-            {
-                operation.Behaviors.Add(new AsyncOperationBehavior());
-                retValue.ParameterType = ReflectionHelper.GetFutureResultType(retValue.ParameterType) ?? typeof(void);
-            }
+            operation.EnableAsync();
         }
     }
 

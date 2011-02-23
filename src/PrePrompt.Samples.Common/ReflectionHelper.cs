@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Reflection;
 using System.Threading.Tasks;
-using PrePrompt.Samples.Common;
 
-namespace PrePrompt.Samples.Async
+namespace PrePrompt.Samples.Common
 {
     internal static class ReflectionHelper
     {

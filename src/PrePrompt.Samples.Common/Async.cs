@@ -4,10 +4,25 @@ using System.Reflection;
 using System.ServiceModel.Channels;
 using System.ServiceModel.Description;
 using System.ServiceModel.Dispatcher;
+using System.Threading;
 using System.Threading.Tasks;
 
-namespace PrePrompt.Samples.Async
+namespace PrePrompt.Samples.Common
 {
+    public static class Async
+    {
+        public static HttpOperationDescription EnableAsync(this HttpOperationDescription operation)
+        {
+            var retValue = operation.ReturnValue;
+            if (typeof(Task).IsAssignableFrom(retValue.ParameterType))
+            {
+                operation.Behaviors.Add(new AsyncOperationBehavior());
+                retValue.ParameterType = ReflectionHelper.GetFutureResultType(retValue.ParameterType) ?? typeof(void);
+            }
+            return operation;
+        }
+    }
+
     public class AsyncOperationBehavior : IOperationBehavior
     {
         public void ApplyDispatchBehavior(OperationDescription description, DispatchOperation operation)
@@ -73,6 +88,43 @@ namespace PrePrompt.Samples.Async
         public object Invoke(object instance, object[] inputs, out object[] outputs)
         {
             throw new NotSupportedException();
+        }
+    }
+
+    public class AsyncResultWrapper : IAsyncResult
+    {
+        private readonly object _state;
+        private readonly IAsyncResult _inner;
+
+        public AsyncResultWrapper(IAsyncResult inner, object state)
+        {
+            _inner = inner;
+            _state = state;
+        }
+
+        public IAsyncResult Inner
+        {
+            get { return _inner; }
+        }
+
+        public object AsyncState
+        {
+            get { return _state; }
+        }
+
+        public WaitHandle AsyncWaitHandle
+        {
+            get { return _inner.AsyncWaitHandle; }
+        }
+
+        public bool CompletedSynchronously
+        {
+            get { return _inner.CompletedSynchronously; }
+        }
+
+        public bool IsCompleted
+        {
+            get { return _inner.IsCompleted; }
         }
     }
 }
