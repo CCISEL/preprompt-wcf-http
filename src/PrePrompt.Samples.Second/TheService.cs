@@ -19,7 +19,7 @@ using PrePrompt.Samples.Common;
 
 
 
-namespace PrePrompt.Samples.First
+namespace PrePrompt.Samples.Second
 {
     [ServiceContract]
     public class TheService
@@ -105,6 +105,61 @@ namespace PrePrompt.Samples.First
             resp.StatusCode = HttpStatusCode.OK;
             resp.Content = new StreamContent(ms);
             resp.Content.Headers.ContentType = new MediaTypeHeaderValue("application/atom+xml");
+        }
+
+
+        public class TimeZoneModel
+        {
+            public String Id {get; set;}
+            public String Name { get; set;}
+            public String Uri { get; set; }
+            public TimeZoneModel(TimeZoneInfo tz)
+            {
+                Id = tz.Id;
+                Name = tz.StandardName;
+                Uri = GetUriForZone(tz.Id).ToString();
+            }
+            // XmlSerializer requires it
+            public TimeZoneModel(){}
+        }
+
+        public class TimeZoneListModel
+        {
+            public TimeZoneModel[] Zones { get;  set; }
+            public TimeZoneListModel(IEnumerable<TimeZoneInfo> tzs)
+            {
+                Zones = tzs.Select(tz => new TimeZoneModel(tz)).ToArray();
+            }
+            // XmlSerializer requires it
+            public TimeZoneListModel(){}
+        }
+
+
+        // Using content negotiation
+        [WebGet(UriTemplate = "zones/")]
+        public TimeZoneListModel GetZones(HttpRequestMessage req, HttpResponseMessage resp)
+        {
+            return new TimeZoneListModel(TimeZoneInfo.GetSystemTimeZones());
+        }
+
+        // Using content negotiation
+        [WebGet(UriTemplate = "time2/")]
+        public string GetTimeWithConneg(HttpRequestMessage req, HttpResponseMessage resp)
+        {
+            return DateTime.Now.ToLongTimeString();
+        }
+
+
+        // Using data annotation
+        [WebGet(UriTemplate = "da/{str}")]
+        public string GetUpperString(
+            DataValidationResult isValid,
+            [StringLength(4)]
+            string str)
+        {
+            var res = string.Format("Valid: {0}, Value: {1}", isValid.Valid, str.ToUpper());
+            Console.WriteLine(res);
+            return res;
         }
     }
 }
