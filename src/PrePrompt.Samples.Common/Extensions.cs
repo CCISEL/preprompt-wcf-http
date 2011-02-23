@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Reflection;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
+using Microsoft.Net.Http;
 
 namespace PrePrompt.Samples.Common
 {
@@ -54,6 +58,33 @@ namespace PrePrompt.Samples.Common
         public static string FormatWith(this string source, params object[] args)
         {
             return string.Format(source, args);
+        }
+
+        public static string ToBase64(this string source)
+        {
+            var ms = new MemoryStream();
+            new BinaryFormatter().Serialize(ms, source);
+            ms.Seek(0, 0);
+            return Convert.ToBase64String(Encoding.UTF8.GetBytes(source));
+        }
+
+        public static HttpRequestMessage Clone(this HttpRequestMessage request)
+        {
+            var copy = new HttpRequestMessage(request.Method, request.RequestUri)
+            {
+                Content = request.Content,
+                Version = request.Version
+            };
+
+            foreach (var header in request.Headers)
+            {
+                foreach (var value in header.Value)
+                {
+                    copy.Headers.AddWithoutValidation(header.Key, value);    
+                }
+            }
+
+            return copy;
         }
     }
 }

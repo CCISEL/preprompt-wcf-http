@@ -1,39 +1,49 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Runtime.Serialization.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Runtime.Serialization.Json;
+using Microsoft.Net.Http;
 using PrePrompt.Samples.Common;
 
 namespace PrePrompt.Samples.Client
 {
-    public class JsonDataContractRestClient<T>
+    public class RestyClient<T>
     {
-        private readonly DataContractJsonSerializer _serializer;
         private readonly string _serviceUrl;
+        private readonly IEnumerable<IContentFormatter> _formatters;
+        private readonly string[] _mediaTypes;
         private readonly Action<HttpClient> _configClient;
 
-        public JsonDataContractRestClient(string serviceUrl, Action<HttpClient> configClient = null)
+        public RestyClient(string serviceUrl, IEnumerable<IContentFormatter> formatters, Action<HttpClient> configClient = null)
         {
             if (serviceUrl.IsNullOrEmpty())
             {
                 throw new ArgumentNullException("serviceUrl");
             }
 
-            _serializer = new DataContractJsonSerializer(typeof(T));
+            if (formatters.Any() == false)
+            {
+                throw new ArgumentOutOfRangeException("formatters");
+            }
+
             _serviceUrl = serviceUrl;
+            _formatters = formatters;
+            _mediaTypes = _formatters.SelectMany(formatter => formatter.SupportedMediaTypes).Select(m => m.MediaType).ToArray();
             _configClient = configClient;
         }
 
-        public Task<Tuple<HttpStatusCode, T>> ExecuteGetAsync(string requestUri, CancellationToken token = default(CancellationToken))
+        public Task<Tuple<HttpStatusCode, T>> ExecuteGetAsync(string requestUri, 
+                                                              CancellationToken token = default(CancellationToken))
         {
             return SendAsync(createRequestMessage(requestUri, HttpMethod.Get), token);
         }
 
-        public Tuple<HttpStatusCode, T> ExecuteGet(string requestUri, CancellationToken token = default(CancellationToken))
+        public Tuple<HttpStatusCode, T> ExecuteGet(string requestUri, 
+                                                   CancellationToken token = default(CancellationToken))
         {
             return ExecuteGetAsync(requestUri, token).Result;
         }
@@ -41,11 +51,12 @@ namespace PrePrompt.Samples.Client
         public Task<Tuple<HttpStatusCode, T>> ExecutePutAsync(string requestUri, T entity,
                                                               CancellationToken token = default(CancellationToken))
         {
-            return SendAsync(createRequestMessage(requestUri, HttpMethod.Put, entity.ToContentUsingDataContractJsonSerializer(_serializer)),
+            return SendAsync(createRequestMessage(requestUri, HttpMethod.Put, entity),
                              token);
         }
 
-        public Tuple<HttpStatusCode, T> ExecutePut(string requestUri, T entity, CancellationToken token = default(CancellationToken))
+        public Tuple<HttpStatusCode, T> ExecutePut(string requestUri, T entity, 
+                                                   CancellationToken token = default(CancellationToken))
         {
             return ExecutePutAsync(requestUri, entity, token).Result;
         }
@@ -53,21 +64,24 @@ namespace PrePrompt.Samples.Client
         public Task<Tuple<HttpStatusCode, T>> ExecutePostAsync(string requestUri, T entity,
                                                                CancellationToken token = default(CancellationToken))
         {
-            return SendAsync(createRequestMessage(requestUri, HttpMethod.Post, entity.ToContentUsingDataContractJsonSerializer(_serializer)),
+            return SendAsync(createRequestMessage(requestUri, HttpMethod.Post, entity),
                            token);
         }
 
-        public Tuple<HttpStatusCode, T> ExecutePost(string requestUri, T entity, CancellationToken token = default(CancellationToken))
+        public Tuple<HttpStatusCode, T> ExecutePost(string requestUri, T entity, 
+                                                    CancellationToken token = default(CancellationToken))
         {
             return ExecutePostAsync(requestUri, entity, token).Result;
         }
 
-        public Task<Tuple<HttpStatusCode, T>> ExecuteDeleteAsync(string requestUri, CancellationToken token = default(CancellationToken))
+        public Task<Tuple<HttpStatusCode, T>> ExecuteDeleteAsync(string requestUri, 
+                                                                 CancellationToken token = default(CancellationToken))
         {
             return SendAsync(createRequestMessage(requestUri, HttpMethod.Delete), token);
         }
 
-        public Tuple<HttpStatusCode, T> ExecuteDelete(string requestUri, CancellationToken token = default(CancellationToken))
+        public Tuple<HttpStatusCode, T> ExecuteDelete(string requestUri, 
+                                                      CancellationToken token = default(CancellationToken))
         {
             return ExecuteDeleteAsync(requestUri, token).Result;
         }
@@ -92,11 +106,18 @@ namespace PrePrompt.Samples.Client
                 using (HttpResponseMessage response = t.Result)
                 {
                     var representation = response.IsSuccessStatusCode && response.StatusCode != HttpStatusCode.NoContent
-                                       ? response.Content.ReadAsJsonDataContract<T>(_serializer) 
+                                       ? readEntity(response)
                                        : default(T);
                     return Tuple.Create(response.StatusCode, representation);
                 }
             });
+        }
+
+        private T readEntity(HttpResponseMessage response)
+        {
+            var content = response.Content;
+            var formatter = _formatters.First(f => f.SupportedMediaTypes.Contains(content.Headers.ContentType));
+            return (T)formatter.ReadFromStream(content.ContentReadStream);
         }
 
         public Tuple<HttpStatusCode, T> Send(HttpRequestMessage message, CancellationToken token)
@@ -104,11 +125,18 @@ namespace PrePrompt.Samples.Client
             return SendAsync(message, token).Result;
         }
 
-        private static HttpRequestMessage createRequestMessage(string requestUri, HttpMethod method, HttpContent content = null)
+        private HttpRequestMessage createRequestMessage(string requestUri, HttpMethod method, Object entity = null)
         {
-            return new HttpRequestMessage(method, requestUri).Configure(req => req
-                .Accept(new MediaTypeWithQualityHeaderValue("application/json", 1.0))
-                .Content(() => content));
+            return new HttpRequestMessage(method, requestUri).Configure(req =>
+            {
+                if (entity != null)
+                {
+                    var ms = new MemoryStream();
+                    _formatters.First().WriteToStream(entity, ms);
+                    req.Content(() => new StreamContent(ms));
+                }
+                req.Accept(_mediaTypes);
+            });
         }
 
         private HttpClient createHttpClient(CancellationToken token)
