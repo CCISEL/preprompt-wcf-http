@@ -14,7 +14,8 @@ namespace PrePrompt.Samples.Client.Authentication
         private readonly Func<string, Tuple<string, string>> _getCredentials;
         private readonly HttpMessageChannel _channel;
 
-        public BasicAuthenticationChannel(HttpMessageChannel inner, Func<string, Tuple<string, string>> getCredentials, HttpMessageChannel channel)
+        public BasicAuthenticationChannel(HttpMessageChannel inner, Func<string, Tuple<string, string>> getCredentials, 
+                                          HttpMessageChannel channel)
             : base(inner, "Basic")
         {
             _getCredentials = getCredentials;

@@ -44,30 +44,21 @@ namespace PrePrompt.Samples.Tests
             }
         }
 
-        public class Resource
-        {
-            public string Name { get; set; }
-            public int Age { get; set; }
-        }
-
-        public static IContentFormatter GetFormatter()
+        public static RestyClient<object> GetClient(TestChannel channel)
         {
             var formatter = new Mock<IContentFormatter>();
             formatter.Setup(f => f.SupportedMediaTypes).Returns(() => new[] { _mediaType });
-            formatter.Setup(f => f.ReadFromStream(It.IsAny<Stream>())).Returns(() => new Resource { Name = "Some Name", Age = 80 });
-            return formatter.Object;
+            formatter.Setup(f => f.ReadFromStream(It.IsAny<Stream>())).Returns(() => new object());
+            return new RestyClient<object>(_url.ToString(), new[] { formatter.Object }, client => client.Channel = channel);
         }
 
         [Test]
         public void ShouldIssueGetRequest()
         {
             const string relative = "get/";
-
             var channel = new Mock<TestChannel> { CallBase = true };
-
-            var restyClient = new RestyClient<Resource>(_url.ToString(), new[] { GetFormatter() }, client => client.Channel = channel.Object);
-
-            Tuple<HttpStatusCode, Resource> result = restyClient.ExecuteGet(relative);
+            Tuple<HttpStatusCode, object> result = GetClient(channel.Object).ExecuteGet(relative);
+            
             Assert.IsNotNull(result.Item2);
             channel.Verify(c => c.MySend(It.Is<HttpRequestMessage>(req => req.Method == HttpMethod.Get
                                                                        && req.RequestUri == new Uri(_url, relative))),
@@ -78,12 +69,9 @@ namespace PrePrompt.Samples.Tests
         public void ShouldIssuePutRequest()
         {
             const string relative = "put/";
-
             var channel = new Mock<TestChannel> { CallBase = true };
+            Tuple<HttpStatusCode, object> result = GetClient(channel.Object).ExecutePut(relative, new object());
 
-            var restyClient = new RestyClient<Resource>(_url.ToString(), new[] { GetFormatter() }, client => client.Channel = channel.Object);
-
-            Tuple<HttpStatusCode, Resource> result = restyClient.ExecutePut(relative, new Resource());
             Assert.IsNotNull(result.Item2);
             channel.Verify(c => c.MySend(It.Is<HttpRequestMessage>(req => req.Method == HttpMethod.Put
                                                                        && req.RequestUri == new Uri(_url, relative)
@@ -95,7 +83,6 @@ namespace PrePrompt.Samples.Tests
         public void ShouldReturnADefaultValueWhenTheResponseHasNoContent()
         {
             const string relative = "put/";
-
             var channel = new Mock<TestChannel> { CallBase = true };
             channel.Setup(c => c.MySend(It.IsAny<HttpRequestMessage>())).Returns(() =>
             {
@@ -107,12 +94,9 @@ namespace PrePrompt.Samples.Tests
                 response.Content.Headers.ContentType = _mediaType;
                 return response;
             });
+            Tuple<HttpStatusCode, object> result = GetClient(channel.Object).ExecutePut(relative, new object());
 
-            var restyClient = new RestyClient<Resource>(_url.ToString(), new[] { GetFormatter() }, client => client.Channel = channel.Object);
-
-            Tuple<HttpStatusCode, Resource> result = restyClient.ExecutePut(relative, new Resource());
             Assert.IsNull(result.Item2);
         }
     }
-
 }
