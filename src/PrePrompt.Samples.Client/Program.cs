@@ -15,7 +15,9 @@ namespace PrePrompt.Samples.Client
     {
         public static void Main()
         {
-            basicAuthenticationSample();
+            //twitterSample();
+            //basicAuthenticationSample();
+            TwitterTunneling.Start();
         }
 
         private static void twitterSample()

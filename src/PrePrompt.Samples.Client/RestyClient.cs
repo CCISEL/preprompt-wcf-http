@@ -121,7 +121,7 @@ namespace PrePrompt.Samples.Client
         private T readEntity(HttpResponseMessage response)
         {
             var content = response.Content;
-            var formatter = _formatters.First(f => f.SupportedMediaTypes.Contains(content.Headers.ContentType));
+            var formatter = _formatters.First(f => f.SupportedMediaTypes.Any(m => m.Equals(content.Headers.ContentType)));
             return (T)formatter.ReadFromStream(content.ContentReadStream);
         }
 

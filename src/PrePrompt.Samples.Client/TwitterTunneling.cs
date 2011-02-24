@@ -15,30 +15,35 @@ using PrePrompt.Samples.Common;
 
 namespace PrePrompt.Samples.Client
 {
-    [ServiceContract]
-    public class TwitterTunneling : IProcessorProvider
+    public class TwitterTunneling
     {
         public static void Start()
         {
             var config = new HttpHostConfiguration();
-            config.SetProcessorProvider(new TwitterTunneling());
-            using (var host = new WebHttpServiceHost(typeof(TwitterTunneling), config, new Uri("Http://localhost:8080/twitter/")))
+            config.SetProcessorProvider(new AsyncProcessorProvider());
+            using (var host = new WebHttpServiceHost(typeof(TheService), config, new Uri("Http://localhost:8080/twitter/")))
             {
                 host.Open();
                 Console.WriteLine("host is opened at {0}, press any key to continue", host.BaseAddresses[0]);
                 Console.ReadLine();
             }
         }
+    }
 
+    [ServiceContract]
+    public class TheService
+    {
         [WebGet(UriTemplate = "{user}")]
         public Task GetTwitterUserMessage(HttpResponseMessage resp, string user)
         {
             var tcs = new TaskCompletionSource<object>();
+
             var formatter = new JsonDataContractFormatter(new DataContractJsonSerializer(typeof(TwitterUser)));
-            new RestyClient<TwitterUser>(Urls.Twitter, new [] { formatter }).ExecuteGetAsync("1/users/show/{0}.json".FormatWith(user))
+            new RestyClient<TwitterUser>(Urls.Twitter, new[] { formatter })
+                .ExecuteGetAsync("1/users/show/{0}.json".FormatWith(user))
                 .ContinueWith(t1 =>
                 {
-                    if (!isSuccess(t1.Result.Item1, resp, tcs))
+                    if (faulted(() => t1.Result.Item1, resp, tcs))
                     {
                         return;
                     }
@@ -46,32 +51,44 @@ namespace PrePrompt.Samples.Client
                     new HttpClient().GetAsync(t1.Result.Item2.ProfileImageUrl)
                         .ContinueWith(t2 =>
                         {
-                            if (!isSuccess(t2.Result.StatusCode, resp, tcs))
+                            if (faulted(() => t2.Result.StatusCode, resp, tcs))
                             {
                                 return;
                             }
 
                             resp.Content = new StreamContent(t2.Result.Content.ContentReadStream);
                             resp.StatusCode = t2.Result.StatusCode;
-                            tcs.SetResult(default(object));
+                            tcs.SetResult(null);
                         });
-                }).ContinueWith(t => isSuccess(HttpStatusCode.InternalServerError, resp, tcs));
+                });
             return tcs.Task;
         }
 
-        private static bool isSuccess(HttpStatusCode statusCode, HttpResponseMessage resp, TaskCompletionSource<object> tcs)
+        private static bool faulted(Func<HttpStatusCode> statusCodeFunc, HttpResponseMessage resp,
+                                    TaskCompletionSource<object> tcs)
         {
-            if (statusCode == HttpStatusCode.OK)
+            HttpStatusCode statusCode = HttpStatusCode.InternalServerError;
+
+            try
             {
-                return true;
+                statusCode = statusCodeFunc();
+                if (statusCode == HttpStatusCode.OK)
+                {
+                    return false;
+                }
             }
+            catch
+            { }
 
-            resp.StatusCode = resp.StatusCode;
+            resp.StatusCode = statusCode;
             resp.Content = new StringContent("Fail");
-            tcs.SetResult(null);  
-            return false;
+            tcs.SetResult(null);
+            return true;
         }
+    }
 
+    public class AsyncProcessorProvider : IProcessorProvider
+    {
         public void RegisterRequestProcessorsForOperation(HttpOperationDescription operation, IList<Processor> processors,
                                                           MediaTypeProcessorMode mode)
         { }

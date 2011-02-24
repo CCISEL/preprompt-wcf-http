@@ -17,7 +17,7 @@ namespace PrePrompt.Samples.Client
 
         public IEnumerable<MediaTypeHeaderValue> SupportedMediaTypes
         {
-            get { return new[] { new MediaTypeHeaderValue("application/json") }; }
+            get { return new[] { new MediaTypeHeaderValue("application/json") { CharSet = "utf-8"} }; }
         }
 
         public void WriteToStream(object instance, Stream stream)
